@@ -1,16 +1,16 @@
-public class OurAI1 implements IOthelloAI {
+public abstract class AlphaBetaPruning implements IOthelloAI {
+
+    protected int playerNumber;
 
     public Position decideMove(GameState s) {
-        System.out.println("Deciding move");
-        System.out.println(s.legalMoves().size());
+        this.playerNumber = s.getPlayerInTurn();
         PositionUtility move = maxValue(s, Integer.MIN_VALUE, Integer.MAX_VALUE);
         return move.position;
     }
 
     private PositionUtility maxValue(GameState s, int alpha, int beta) {
-        //System.out.println("maxValue");
-        if(s.isFinished()){
-            int util = Utility(s);
+        if(Cutoff(s)){
+            int util = Eval(s);
             return new PositionUtility(util, null);
         }
         int v = Integer.MIN_VALUE;
@@ -31,9 +31,8 @@ public class OurAI1 implements IOthelloAI {
     }
 
     private PositionUtility minValue(GameState s, int alpha, int beta){
-        //System.out.println("minValue");
-        if(s.isFinished()){
-            int util = Utility(s);
+        if(Cutoff(s)){
+            int util = Eval(s);
             return new PositionUtility(util, null);
         }
         int v = Integer.MAX_VALUE;
@@ -53,17 +52,9 @@ public class OurAI1 implements IOthelloAI {
         return new PositionUtility(v, move);
     }
 
-    private int Utility(GameState s) {
-        //System.out.println("Deciding utility");
-        int[] tokensCount = s.countTokens();
-        if (tokensCount[0] > tokensCount[1]) {
-            return 1;
-        } else if (tokensCount[1] > tokensCount[0]) {
-            return -1;
-        } else {
-            return 0;
-        }
-    }
+    protected abstract int Eval(GameState s);
+
+    protected abstract boolean Cutoff(GameState s);
 }
 
 
