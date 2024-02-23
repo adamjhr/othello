@@ -4,57 +4,77 @@ public abstract class AlphaBetaPruning implements IOthelloAI {
 
     public Position decideMove(GameState s) {
         this.playerNumber = s.getPlayerInTurn();
-        PositionUtility move = maxValue(s, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        PositionUtility move = maxValue(s, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
+        if (move.position == null) {
+            return s.legalMoves().get(0);
+        }
         return move.position;
     }
 
-    private PositionUtility maxValue(GameState s, int alpha, int beta) {
-        if(Cutoff(s)){
-            int util = Eval(s);
+    private PositionUtility maxValue(GameState s, double alpha, double beta, int depth) {
+        if(Cutoff(s, depth)){
+            double util = Eval(s);
             return new PositionUtility(util, null);
         }
-        int v = Integer.MIN_VALUE;
+        double v = Double.NEGATIVE_INFINITY;
         Position move = s.legalMoves().size() != 0 ? s.legalMoves().get(0) : null;
         for (Position p : s.legalMoves()) {
             GameState newGameState = new GameState(s.getBoard(), s.getPlayerInTurn());
             newGameState.insertToken(p);
             
-            PositionUtility u = minValue(newGameState, alpha, beta);
+            PositionUtility u = minValue(newGameState, alpha, beta, depth + 1);
             if (u.utility > v) {
                 v = u.utility;
                 move = p;
-                beta = Integer.max(v, alpha);
+                beta = Double.max(v, alpha);
             }
             if (v >= beta) return new PositionUtility(v, move);
         }
         return new PositionUtility(v, move);
     }
 
-    private PositionUtility minValue(GameState s, int alpha, int beta){
-        if(Cutoff(s)){
-            int util = Eval(s);
+    private PositionUtility minValue(GameState s, double alpha, double beta, int depth){
+        if(Cutoff(s, depth)){
+            double util = Eval(s);
             return new PositionUtility(util, null);
         }
-        int v = Integer.MAX_VALUE;
+        double v = Double.POSITIVE_INFINITY;
         Position move = s.legalMoves().size() != 0 ? s.legalMoves().get(0) : null;
         for (Position p : s.legalMoves()) {
             GameState newGameState = new GameState(s.getBoard(), s.getPlayerInTurn());
             newGameState.insertToken(p);
             
-            PositionUtility u = maxValue(newGameState, alpha, beta);
+            PositionUtility u = maxValue(newGameState, alpha, beta, depth + 1);
             if (u.utility < v) {
                 v = u.utility;
                 move = p;
-                beta = Integer.min(v, beta);
+                beta = Double.min(v, beta);
             }
             if (v <= alpha) return new PositionUtility(v, move);
         }
         return new PositionUtility(v, move);
     }
 
-    protected abstract int Eval(GameState s);
+    protected double Utility(GameState s) {
+        int[] tokensCount = s.countTokens();
+        if (tokensCount[0] > tokensCount[1]) {
+            if (playerNumber == 1) {
+                return 1;
+            }
+            return -1;
+        } else if (tokensCount[1] > tokensCount[0]) {
+            if (playerNumber == 1) {
+                return -1;
+            }
+            return -1;
+        } else {
+            return 0;
+        }
+    }
 
-    protected abstract boolean Cutoff(GameState s);
+    protected abstract double Eval(GameState s);
+
+    protected abstract boolean Cutoff(GameState s, int depth);
 }
 
 

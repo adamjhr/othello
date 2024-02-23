@@ -1,10 +1,10 @@
 public class AlphaBetaPruningSimple extends AlphaBetaPruning {
     
-    protected boolean Cutoff(GameState s) {
+    protected boolean Cutoff(GameState s, int depth) {
         return s.isFinished();
     }
 
-    protected int Eval(GameState s) {
+    protected double Eval(GameState s) {
         int[] tokensCount = s.countTokens();
         if (tokensCount[0] > tokensCount[1]) {
             if (playerNumber == 1) {

@@ -1,8 +1,8 @@
 public class PositionUtility {
-    public int utility;
+    public double utility;
     public Position position;
 
-    public PositionUtility(int utility, Position position) {
+    public PositionUtility(double utility, Position position) {
         this.utility = utility;
         this.position = position;
     }
