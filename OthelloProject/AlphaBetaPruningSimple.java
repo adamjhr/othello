@@ -15,7 +15,7 @@ public class AlphaBetaPruningSimple extends AlphaBetaPruning {
             if (playerNumber == 1) {
                 return -1;
             }
-            return -1;
+            return 1;
         } else {
             return 0;
         }

@@ -1,3 +1,5 @@
+import java.io.Console;
+
 public abstract class AlphaBetaPruning implements IOthelloAI {
 
     protected int playerNumber;
@@ -66,7 +68,7 @@ public abstract class AlphaBetaPruning implements IOthelloAI {
             if (playerNumber == 1) {
                 return -1;
             }
-            return -1;
+            return 1;
         } else {
             return 0;
         }
