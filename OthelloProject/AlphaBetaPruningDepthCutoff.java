@@ -3,7 +3,7 @@ public class AlphaBetaPruningDepthCutoff extends AlphaBetaPruning {
     // It doesnt care about the amount, only wether or not it has more than its opponent
     // Cuts of at some amount of tiles placed, which depends on the size of the board 
 
-    private int depthCutoff = 10;
+    private int depthCutoff = 3;
     private int cornerValue = 8;
     private int sideValue = 4;
 
@@ -28,8 +28,6 @@ public class AlphaBetaPruningDepthCutoff extends AlphaBetaPruning {
             opponentControl = this.countPlayerTokens(s)[0] / (double) boardSize * -1;
         }
 
-        System.out.println(ourControl);
-        System.out.println(opponentControl);
         return ourControl + opponentControl;
     }
 
@@ -49,8 +47,8 @@ public class AlphaBetaPruningDepthCutoff extends AlphaBetaPruning {
 
     	for (int i = 0; i < size; i++){
     		for (int j = 0; j < size; j++){
-                if(i == 0 || i == 8){
-                    if(j==0 || j==8){
+                if(i == 0 || i == size-1){
+                    if(j==0 || j==size-1){
                         if (s.getBoard()[i][j] == 1 )
     				        tokens1 += this.cornerValue;
     			        else if (s.getBoard()[i][j] == 2 )
@@ -62,7 +60,7 @@ public class AlphaBetaPruningDepthCutoff extends AlphaBetaPruning {
     				        tokens2 += this.sideValue;
                     }
                 }else{
-                    if(j==0 || j==8){
+                    if(j==0 || j==size-1){
                         if (s.getBoard()[i][j] == 1 )
     				        tokens1 += this.sideValue;
     			        else if (s.getBoard()[i][j] == 2 )

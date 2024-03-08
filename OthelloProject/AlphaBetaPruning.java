@@ -1,15 +1,17 @@
-import java.io.Console;
+import java.time.LocalTime;
 
 public abstract class AlphaBetaPruning implements IOthelloAI {
 
     protected int playerNumber;
 
     public Position decideMove(GameState s) {
+        var before=LocalTime.now();
         this.playerNumber = s.getPlayerInTurn();
         PositionUtility move = maxValue(s, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
         if (move.position == null) {
             return s.legalMoves().get(0);
         }
+        System.out.println("Started: "+before+", ended "+LocalTime.now());
         return move.position;
     }
 
@@ -23,13 +25,15 @@ public abstract class AlphaBetaPruning implements IOthelloAI {
         for (Position p : s.legalMoves()) {
             GameState newGameState = new GameState(s.getBoard(), s.getPlayerInTurn());
             newGameState.insertToken(p);
-            
             PositionUtility u = minValue(newGameState, alpha, beta, depth + 1);
+            //int i=0;
             if (u.utility > v) {
+                //System.out.println(u.utility+" is bigger than "+v+" and this is iteration "+i );
                 v = u.utility;
                 move = p;
-                beta = Double.max(v, alpha);
+                alpha = Double.max(v, alpha);
             }
+            //System.out.println("utility: "+v+", beta: "+beta+", alpha:"+alpha);
             if (v >= beta) return new PositionUtility(v, move);
         }
         return new PositionUtility(v, move);
@@ -78,5 +82,3 @@ public abstract class AlphaBetaPruning implements IOthelloAI {
 
     protected abstract boolean Cutoff(GameState s, int depth);
 }
-
-
